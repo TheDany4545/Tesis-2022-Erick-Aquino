@@ -87,13 +87,15 @@ pos_dif_HR = abs(dif_HR)
 ####################### HEART RATE DIFFERENTIAL METHOD #######################
 
 x = np.array(RR_intervalo)
+x_sum = np.array(RR_intervalo)
 num_interval = len(x)
 n = 3
 i=0
 sumatoria =0
 
-while i <= n:
+while i <= num_interval:
     sumatoria += i
+    x_sum[i] = sumatoria
     i+= 1
 print("EL VALOR ES " +str(sumatoria))
     
