@@ -9,7 +9,7 @@ Created on Sun Aug 14 19:41:25 2022
 import serial
 import csv
 
-path= r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\prueba.csv'
+path= r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data2.csv'
 with open(path, "r") as my_file:
     # pass the file object to reader()
     file_reader = csv.reader(my_file)
