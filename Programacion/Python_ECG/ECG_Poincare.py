@@ -14,7 +14,7 @@ import spectrum
 ########################## Codigo ###########################
 ############################## Importing DATA ################################
 column_names = ['time','ecg']
-path= r'C:\Users\Daniel\Desktop\ECG\new3.csv'
+path= r'C:\Users\Daniel\Desktop\ECG\p10_5.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
 #r'C:\Users\Daniel\Desktop\ECG_v2\ECG_12h.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
@@ -58,7 +58,7 @@ plt.show()
 
 #Function with other parameters as height and x distance 0.65
 #Corrige los picos 0.59
-Rwave_peaks_d_ecg = fn.d_ecg_peaks(d_ecg,peaks_d_ecg,heart_data.time,0.55,0.4)
+Rwave_peaks_d_ecg = fn.d_ecg_peaks(d_ecg,peaks_d_ecg,heart_data.time,0.6,0.4)
 plt.show()
 
 #Grafica donde vemos la derivada y la original, pero comparando los picos de 

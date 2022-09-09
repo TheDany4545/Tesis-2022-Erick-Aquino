@@ -12,11 +12,16 @@ import numpy as np
 import biosppy
 import nolds
 import spectrum
+import sklearn as sk
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import random
 ############################ Código | Parte serial ############################
 #Lugar de destino para guardar los datos recibidos
 path_save = r'C:\Users\Daniel\Desktop\dato_leido.csv' 
 ser = serial.Serial(
-        port= ('COM8'),
+        port= ('COM7'),
         baudrate = 115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -134,9 +139,66 @@ nni_results = nl.poincare(RR_intervalo, ellipse= True, vectors= True, legend= Tr
 SD1 = nni_results['sd1']
 # SD2 (L) RELFLEJA LAS FLUCTUACIONES GENERALES / Variabilidad en el tiempo
 SD2 = nni_results['sd2']
+centro = nni_results['centro']
 
 print('SD1 es:',SD1)
 print('SD2 es:',SD2)
+print('Centro es: ',centro)
+
+
+##############################################################################
+############################ MACHINE LEARNING ################################
+
+path_MC = r'C:\Users\Daniel\Desktop\ECG\resultados_Nueva_data.csv'
+
+rand = random.randint(1, 300)
+print('El valor aleatorio es: ', rand )
+resultados = pd.read_csv(path_MC)
+results = resultados.drop(columns='Nombre',axis=1)
+x = results.drop(columns='target',axis=1) #Me quedo con mis features
+x = x.values
+y = results['target'] # Me quedo con las salidas
+y = y.values
+
+x_train, x_test, y_train, y_test = train_test_split(x, y,
+                                                    test_size = 0.5,
+                                                    stratify=y,
+                                                    random_state= rand )
+print(x.shape, x_train.shape, x_test.shape)
+
+model = LogisticRegression()
+model.fit(x_train, y_train)
+
+#Precision en training data
+x_train_prediction = model.predict(x_train)
+training_data_accuracy = accuracy_score(x_train_prediction, y_train)
+print('Accuracy of the Training data:', training_data_accuracy)
+
+x_test_prediction = model.predict(x_test)
+test_data_accuracy = accuracy_score(x_test_prediction, y_test)
+print('Accuracy of the Test data:', test_data_accuracy)
+
+################### INPUT #########################
+#input_data = (13.58965485243332,26.504190375071182,404.5652173913044) # Resposo Data P31
+#input_data = (24.64204884,28.66216291,254.7130435) #ejercicio bike 5 60 segs
+#input_data = (28.112780899538947,60.21766990988758,315.0752688172043) #ejercicio MIT 322 60 segs
+#input_data = (180.46866958812709,174.00529805152485,380.57142857142856) #ejercicio MIT 323 60 segs
+input_data = (SD1,SD2,centro) #ejercicio MIT 325 60 segs
+
+
+#cambiando un poco to numpy array
+input_data_as_numpy_array = np.asarray(input_data)
+
+#reshape the numpy array as we are predicting for only one instance
+input_data_reshape = input_data_as_numpy_array.reshape(1,-1)
+
+prediction = model.predict(input_data_reshape)
+print(prediction)
+if (prediction[0]==0):
+  print('La persona esta en reposo según su ECG')
+else:
+  print('La persona esta haciedo un esfuerzo físico según su ECG')
+
 
 
 
