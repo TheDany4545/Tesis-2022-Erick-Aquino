@@ -14,7 +14,7 @@ import spectrum
 ########################## Codigo ###########################
 ############################## Importing DATA ################################
 column_names = ['time','ecg']
-path= r'C:\Users\Daniel\Desktop\ECG\p10_5.csv'
+path= r'C:\Users\Daniel\Desktop\ECG\data14.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
 #r'C:\Users\Daniel\Desktop\ECG_v2\ECG_12h.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
@@ -43,12 +43,17 @@ heart_data_filtered = scipy.signal.filtfilt(b,a,heart_data.ecg)
 ################################# Graficas ##################################
 plt.plot(heart_data.time, heart_data.ecg)
 plt.plot(heart_data.time, heart_data_filtered)
+plt.xlabel('Segundos (S)')
+plt.ylabel('Milivoltios (mV)')
 #plt.show(()
 ############################# Posicion picos ################################
-
-picos,_ = scipy.signal.find_peaks(heart_data_filtered,height=(0.4))
+voltaje = 0.4
+picos,_ = scipy.signal.find_peaks(heart_data_filtered,height=(voltaje))
 plt.plot(heart_data.time, heart_data_filtered)
 plt.plot(heart_data.time[picos], heart_data_filtered[picos],"X")
+plt.axhline(voltaje, color = 'black', label = 'threshold')
+plt.xlabel('Segundos (S)')
+plt.ylabel('Milivoltios (mV)')
 plt.show()
 ############################ better peak finder #############################
 
