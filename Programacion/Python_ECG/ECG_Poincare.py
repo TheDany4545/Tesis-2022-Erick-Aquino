@@ -14,7 +14,7 @@ import spectrum
 ########################## Codigo ###########################
 ############################## Importing DATA ################################
 column_names = ['time','ecg']
-path= r'C:\Users\Daniel\Desktop\ECG\data14.csv'
+path= r'C:\Users\Daniel\Desktop\ECG\new11.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
 #r'C:\Users\Daniel\Desktop\ECG_v2\ECG_12h.csv'
 #r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Programacion\Python_ECG\data.csv'
