@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Thu Oct 27 19:13:08 2022
+
+@author: Daniel
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Thu Aug 25 14:01:33 2022
 
 @author: Daniel
@@ -29,24 +36,13 @@ index = 0
 def animate(i):
     data_leida = pd.read_csv(path_save)
     eje_x = data_leida.iloc[:,0] #columna tiempo ms
-    eje_x[:,0] = eje_x[:,0].str.replace("'","") # Remove quotes 
-    eje_x[:,0] = eje_x[:,0].str.replace(":"," ") #add space
-    eje_x[:,0] = eje_x[:,0].str.replace("."," ",regex = False) #add space
-    eje_x[:,0] = eje_x.map(to_seconds)
     eje_y = data_leida.iloc[:,1] #columna voltaje mV
     
     plt.cla() # para que no cambia de colores al graficar
     plt.plot(eje_x, eje_y, label='Voltaje vs Tiempo')
     plt.legend(loc='upper left')
     #plt.tight_layout()
-    
-def to_seconds(hora):
-    mins, segs, ms, = hora.split(" ")
-    #return int(mins)*360 + int(segs) + float(ms)
-    return int(segs)+float (ms)/1000
 
-######################### Columna time en segundos###########################
-#heart_data['time'] = heart_data['time'].map(to_seconds)
 
 #Se borra lo que exista en el archivo
 with open(path_save,'w') as f:

@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import random
-from sklearn.externals import joblib
+#from sklearn.externals import joblib
 
 
 path_MC = r'C:\Users\Daniel\Desktop\ECG\resultados_Nueva_data.csv'
@@ -21,9 +21,9 @@ y = results['target'] # Me quedo con las salidas
 y = y.values
 
 x_train, x_test, y_train, y_test = train_test_split(x, y,
-                                                    test_size = 0.5,
+                                                    test_size = 0.2,
                                                     stratify=y,
-                                                    random_state= rand )
+                                                    random_state= 14)
 print(x.shape, x_train.shape, x_test.shape)
 
 model = LogisticRegression()
@@ -65,5 +65,5 @@ else:
   print('La persona esta haciedo un esfuerzo físico según su ECG')
   
 #saving
-filename = 'model.sav'
-joblib.dump(clf,filename)
+#filename = 'model.sav'
+#joblib.dump(clf,filename)
