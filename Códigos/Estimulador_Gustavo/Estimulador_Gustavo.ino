@@ -49,21 +49,24 @@ byte pulsos = 0;
 bool Ramp_mode = false; 
 bool go_to_sleep = false;
 bool update_mode = false;
-bool Hall_Sensor_Armed = false;
+bool Resume_Repose = false;
+bool Magnet_Triggered = false;
+bool magnet_mode = false;
 
 uint8_t amplitude;
-float output_voltage = 1.75;                        // Voltage (V)
-uint8_t frequency = 5;                              // Hertz (Hz)
-uint16_t Stimulation_time = 1;                      // Seconds (s)
-uint16_t Repose_time = 18;                          // Seconds (s)
+float output_voltage = 2.75;                        // Standard Mode Voltage Output - Voltage (V)
+uint8_t frequency = 25;                              // Standard Mode Stimulation Frequency - Hertz (Hz)
+uint16_t Stimulation_time = 2;                      // Standard Mode Stimulation Time - Seconds (s)
+uint16_t Repose_time = 7;                          // Standard Mode Repose Time - Seconds (s)
 
-float magnet_output_voltage = 0.5;
-uint16_t magnet_Stimulation_time = 2;
+float magnet_output_voltage = 0.25;                  // Magnet Mode Voltage Output (V)
+uint16_t magnet_Stimulation_time = 1;               // Magnet Mode Stimulation Frequency - Hertz (Hz)
+uint16_t Pause_Repose;                              // Store Repose Time to Resume After a Magnet Mode Stimulation
 
 float ramp_interval;
 int timer_interval;
 int amplitude_max;                                  // Maximum Stimulation Amplitude (V)
-int amplitude_min = 0;                              // Minimum Stimulation Amplitude (V)
+int amplitude_min = 1;                              // Minimum Stimulation Amplitude (V)
  
 uint16_t pot_command;
 uint16_t pot_value;
@@ -75,19 +78,18 @@ uint16_t pot_value;
 void setup()
 {
 
-  PM->CPUSEL.reg = PM_CPUSEL_CPUDIV(2);
+  //PM->CPUSEL.reg = PM_CPUSEL_CPUDIV(2);
 
 //...................................... Set Input/Output Pins Mode Configuration ......................................
+
+  SPI.begin();                                                            // Enable SPI Communication
   
   pinMode(0, OUTPUT);                                                     // VNS Stimulation Signal Output 
   pinMode(1, INPUT_PULLUP);                                               // Input for Hall Sensor (open drain)
-  PORT->Group[PORTA].DIRSET.reg = PORT_PA03;                              // Set PA03 Pin as Output (CS SPI Communication)
-  PORT->Group[PORTA].OUTSET.reg = PORT_PA03;                              // Set PA03 Pin to High
-  //attachInterrupt(digitalPinToInterrupt(1), Hall_Sensor, FALLING);        // Configure Falling Interrupt for Hall Sensor
-  attachInterrupt(digitalPinToInterrupt(1), Hall_Sensor, RISING);          // Configure Rising Interrupt for Hall Sensor
-  
-  SPI.begin();                                                            // Enable SPI Communication
-  
+  PORT->Group[PORTA].DIRSET.reg = PORT_PA10;                              // Set PA03 Pin as Output (CS SPI Communication)
+  PORT->Group[PORTA].OUTSET.reg = PORT_PA10;                              // Set PA03 Pin to High
+  attachInterrupt(digitalPinToInterrupt(1), Hall_Sensor_ON, RISING);      // Configure Rising Interrupt for Hall Sensor
+    
 // .....................................................................................................................
 
   amplitude_max = output_voltage*(255/3.3)+4;
@@ -236,15 +238,9 @@ void setup()
   
 // ......................... CONFIGURAR TIEMPO DE ACTUALIZACIÓN DE LA RAMPA ............................................
 
-if (Ramp_mode == true)
+if (Ramp_mode)
 {
-  // CCx = (time*(8MHz/1024))-1
-  // 1/time = (amplitude_max-1)/2000ms   
-   
-  amplitude = amplitude_min;                      // Ramp-up Starts in Amplitude = 1
-  ramp_interval = (amplitude_max-1)/2;            // (98-1)/2s = 48.5Hz => 20.62ms
-  timer_interval = (7812.5/ramp_interval)-1;      // (7812.5/ramp_interval)-1;     // (46,875.0/48.5)-1 = 965.49 => 965 
-
+  ramp_update();                                  // Calculate Ramp Time Update
   Timer2_Config();                                // Configurate Timer for Ramp Amplitude Refresh
   Timer2_Interrupts();                            // Enable Ramp Amplitude Refresh
   Timer2_Start();                                 // Start Timer for Ramp Amplitude Refresh
@@ -257,20 +253,22 @@ else
 //...................................... Configurar Timer (ON/OFF Time) ................................................
 
   Timer_Config();           
-  Timer_Start();    
-
-// .....................................................................................................................
-  
-  flag=1;
+  Timer_Start();   
+  flag = true;
 
 }
 
 
-// .....................................................................................................................
-
 
 void loop() 
 {
+
+
+  if(magnet_mode)
+  {
+    Hall_Sensor(); 
+    magnet_mode = false; 
+  }
 
   if(update_mode)
   {
@@ -289,7 +287,17 @@ void loop()
     go_to_sleep = false;
     SAMD21_Sleep();    
   }
+
   
+}
+
+
+// ............................. HALL Sensor Activation for On Demand Mode .............................................
+
+
+void Hall_Sensor_ON()
+{
+  magnet_mode = true;  
 }
 
 
@@ -299,18 +307,31 @@ void loop()
 void Hall_Sensor()
 {
 
+  if(mode == 4) 
+  {
+    Pause_Repose = TC5->COUNT16.COUNT.reg;
+    Resume_Repose = true; 
+  }
+
   mode = 0;
   flag = 0;
   pulsos = 0;
   go_to_sleep = false;
-  
-  if(Ramp_mode) amplitude = amplitude_min;
-  else amplitude = amplitude_max;
+  Magnet_Triggered = true; 
 
+  // Amplitude Change to Magnet Mode Parameters
+  Timer2_Stop();
+  amplitude_max = magnet_output_voltage*(255/3.3)+4;        // Calculate Magnet Mode Amplitude
+  if(Ramp_mode) amplitude = amplitude_min;                  // Select Initial Amplitude (with or without ramp mode)
+  else amplitude = amplitude_max;                       
+  ramp_update();                                            // Calculate Ramp Time Update
+  Timer2_Config();                                          // Configurate Timer for Ramp Amplitude Refresh   
+  
   flag = true;
   update_mode = true;
   
 }
+
 
 // ............................. TIMER DE ACTUALIZACIÓN DE AMPLITUD DE LA RAMPA ........................................
 
@@ -322,11 +343,11 @@ void TCC0_Handler()
   {
     pulsos++;                                 // Contar pulsos realizados
     
-    if(pulsos==frequency)                     // ¿# de pulsos coinciden con la frecuencia configurada?
+    if(pulsos == frequency)                   // ¿# de pulsos coinciden con la frecuencia configurada?
     {
       pulsos=0;                               // Reiniciar contador de pulsos
-      if(Ramp_mode == true) amplitude--;      // Disminuir amplitud para entrar en rampa de bajada
-      flag=1;                                 // Actualizar amplitud del poteciometro
+      if(Ramp_mode) amplitude--;              // Disminuir en -1 la amplitud para entrar en rampa de bajada
+      flag = true;                            // Actualizar amplitud del poteciometro
     } 
      
   }
@@ -342,8 +363,8 @@ void TCC0_Handler()
 void TCC1_Handler()
 {
 
-  if(mode==1) amplitude++;              // ¿Rampa de subida? -> Incrementar Amplitud 
-  else if(mode==3) amplitude--;         // ¿Rampa de bajada? -> Decrementar Amplitud
+  if(mode==1) amplitude++;                      // ¿Rampa de subida? -> Incrementar Amplitud 
+  else if(mode==3) amplitude--;                 // ¿Rampa de bajada? -> Decrementar Amplitud
 
   if(amplitude > amplitude_max) amplitude = amplitude_max;  
   if(amplitude < amplitude_min) amplitude = amplitude_min;
@@ -363,7 +384,7 @@ void setResistance(int percent)
   pot_command = 0x0011;                                             // Write Command to Potentiometer
   pot_value = (pot_command << 8) | percent;                         // Add Potentiometer Value to Write Command
 
-  PORT->Group[PORTA].OUTCLR.reg = PORT_PA03;                        // Set Potentiometer CS Pin to Low
+  PORT->Group[PORTA].OUTCLR.reg = PORT_PA10;                        // Set Potentiometer CS Pin to Low
   delayMicroseconds(50);                                            // Delay
   
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));  // Begin SPI Transaction  
@@ -371,7 +392,7 @@ void setResistance(int percent)
   SPI.endTransaction();                                             // End SPI Transaction
   
   delayMicroseconds(50);                                            // Delay
-  PORT->Group[PORTA].OUTSET.reg = PORT_PA03;                        // Set Potentiometer CS Pin to High
+  PORT->Group[PORTA].OUTSET.reg = PORT_PA10;                        // Set Potentiometer CS Pin to High
 
 }
 
@@ -412,13 +433,13 @@ void next_mode(void)
     TC5->COUNT16.CC[0].reg = (uint16_t) 62;             // Set TC5 value with Ramp Up Time (2s)   
     PWM_Start();                                        // Start PWM  (Stimulation Signal)
     Timer_Start();                                      // Enable Timer again    
-    Timer2_Start();                                     // Update Up Ramp Amplitude Interval     
+    Timer2_Start();                                     // Update Up Ramp Amplitude Interval    
   }
   else if(mode == 2)                                    // On Time Interval Active?
   {
     Timer2_Stop();                                      // Stop Update of Ramp Amplitude 
     pulsos=0;                                           // Reset Stimulation Pulses Count
-    Timer_Disable();                                    // Stop Timer to change to ON time value       
+    Timer_Disable();                                    // Stop Timer to change to ON time value   
     TC5->COUNT16.CC[0].reg = (uint16_t) ON_Time;        // Set TC5 value with ON Time (Stimulation)    
     if(Ramp_mode == false) PWM_Start();                 // Enable PWM 
     Timer_Start();                                      // Enable Timer again    
@@ -435,12 +456,48 @@ void next_mode(void)
     Timer2_Stop();                                      // Stop Update of Ramp Amplitude   
     PWM_Stop();                                         // Disable PWM     
     Timer_Disable();                                    // Stop Timer to change to OFF Time Value
-    TC5->COUNT16.CC[0].reg = (uint16_t) OFF_Time;       // Set TC5 value with OFF Time (Repose)    
+    TC5->COUNT16.CC[0].reg = (uint16_t) OFF_Time;       // Set TC5 value with OFF Time (Repose)
+    
+    if (Resume_Repose) 
+    {
+      TC5->COUNT16.COUNT.reg = Pause_Repose;
+      Resume_Repose = false;
+    }    
+
+    if(Magnet_Triggered)
+    {   
+      amplitude_max = output_voltage*(255/3.3)+4;
+      if(Ramp_mode) amplitude = amplitude_min;
+      else amplitude = amplitude_max;
+      ramp_update();                                            // Calculate Ramp Time Update
+      Timer2_Config();                                          // Configurate Timer for Ramp Amplitude Refresh  
+      Magnet_Triggered = false; 
+    }
+    
     Timer_Start();                                      // Enable Timer again        
     //go_to_sleep = true;                                 // Enter in Standy Mode to Save Energy
   }
     
 }
+
+
+// .....................................................................................................................
+
+
+void ramp_update()
+{
+
+  // CCx = (time*(8MHz/1024))-1
+  // 1/time = (amplitude_max-1)/2000ms   
+   
+  amplitude = amplitude_min;                      // Ramp-up Starts in Amplitude = 1
+  ramp_interval = (amplitude_max-1)/2;            // (98-1)/2s = 48.5Hz => 20.62ms
+  timer_interval = (7812.5/ramp_interval)-1;      // (7812.5/ramp_interval)-1;     // (46,875.0/48.5)-1 = 965.49 => 965 
+
+}
+
+
+// .....................................................................................................................
 
 
 void PWM_Config()
