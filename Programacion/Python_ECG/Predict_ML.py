@@ -9,7 +9,7 @@ import random
 #from sklearn.externals import joblib
 
 
-path_MC = r'C:\Users\Daniel\Desktop\ECG\resultados_Nueva_data.csv'
+path_MC = r'C:\Users\eaqui\OneDrive\Desktop\ECG\resultados_Nueva_data.csv'
 
 rand = random.randint(1, 300)
 print('El valor aleatorio es: ', rand )
