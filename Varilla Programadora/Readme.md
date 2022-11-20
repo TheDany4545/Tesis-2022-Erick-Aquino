@@ -1,4 +1,4 @@
-## Varilla Prgogramadora
+## Varilla Programadora
 ### Códigos Micrcontroladores
 En esta carpeta se encuentra el código para enviar parámetros a través del ESP8266 y para modificar los parámetros se requiere de una interfaz gráfica la cual se hace desde python, por lo que se compone de dos programas uno en el lenguaje de programación que va compilado en el ESP8266 y el otro es ejecutado desde Python para la interfaz gráfica. Se recomiennda trabajar con Spyder.
 ### Códigos Modo Automático
