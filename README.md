@@ -3,3 +3,7 @@ En este respositorio se encuentra la combinación de los avances previos a la Fa
 
 ## Modo automático
 Es basado en el modo de funcionamiento de *detección y respuesta* también conocido como *AutoStim* de los modelos LivaNova 106 y 1000. Consiste en emplear un sistema de monitoreo y relocección de información de impulsos eléctricos de la actividad cardíaca mediante un electrocardiograma (ECG). La administración de la dosis para la terapia se activa de forma automática al momento de detectar un aumento rápido en la frecuencia cardiaca, la cual es asociada a las convulsiones.
+
+### Documentación
+Se enceuntran artículos cientificos, datasheets de distintos componentes y microcontroladores, pinouts y base de datos en formato .csv para hacer las pruebas.
+
