@@ -62,6 +62,7 @@ while 1:
                 datos.clear()
                 val = val+5
                 print ('****************** Si se encontro ************************')
+                
 
 
 
@@ -74,8 +75,7 @@ while 1:
         continue
     
        
-   
-    
+
 
 
 
