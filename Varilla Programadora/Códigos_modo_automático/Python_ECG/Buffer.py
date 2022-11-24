@@ -5,7 +5,7 @@ Created on Thu Oct 27 20:13:06 2022
 @author: Daniel
 """
 
-################### GUARDAR LO QUE VIENE DEL SERIAL EN UN BUFFER###############
+############################## SE IMPORTAN LIBRERIAS ##########################
 import pandas as pd
 import csv
 import serial
@@ -14,8 +14,7 @@ from itertools import count
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-#Lugar de destino para guardar los datos recibidos
-#path_save = r'C:\Users\eaqui\OneDrive\Desktop\dato_leido.csv' 
+################### GUARDAR LO QUE VIENE DEL SERIAL EN UN BUFFER###############
 ser = serial.Serial(
         port= ('COM9'),
         baudrate = 115200,
@@ -26,18 +25,9 @@ ser = serial.Serial(
 )
 
 datos = []
-data_list = []
+data_list = [] #Aqui se guardan los df en distintos segundos
 val = 5
-'''
-while 1:
-    read_line = ser.readline()
-    decoded_line = read_line.decode('utf-8').rstrip()
-    if decoded_line ==  "":
-        None
-    if decoded_line != "":
-        datos.append(decoded_line)
-        print (decoded_line)
-        '''
+
         
 ######################### Funcion formato de tiempo a Segundos###############
 def to_seconds(hora):
@@ -64,25 +54,17 @@ while 1:
                 df[0] = df[0].str.replace(":"," ") # add space 
                 df[0] = df[0].str.replace("."," ") # add space 
                 df[0] = df[0].map(to_seconds)
-                #df[df.eq(val).any(1)].empty == df.iloc[0:0]
+
                 print("Quiero ver cuantas veces te actualizas")
         if df[df.eq(val).any(1)].empty == False: #Si esta lleno, ejecutar funcion
                 data_list.append(df)
                 df = df.iloc[0:0] #vacio el dataframe
                 datos.clear()
                 val = val+5
-                #bandera = bandera.iloc[0:0]
-                print ('Si se encontro')
-                #bandera = df[df.eq(val).any(1)] #Encuentra el valor deseado
+                print ('****************** Si se encontro ************************')
 
-        
-        # if df[df.eq(val).any(1)].empty == False: #Si esta lleno, ejecutar funcion
-        #     #df = df.iloc[0:0] #vacio el dataframe
-        #     #bandera = bandera.iloc[0:0]
-        #     df = pd.DataFrame()
-        #     print ('Si se encontro')
-        #     #bandera = df[df.eq(val).any(1)] #Encuentra el valor deseado
-            
+
+
             
                 
             
@@ -92,53 +74,10 @@ while 1:
         continue
     
        
-
-# def limpio():
-#     df = df.iloc[0:0] #vacio el dataframe
-#     bandera = bandera.iloc[0:0]
-#     print ('Si se encontro')
-#     return df , bandera   
-            
-    
-    
-    
-        
+   
     
 
 
 
 
-'''
-fig = plt.figure(figsize=(7,3))
-ax = fig.add_subplot()
-
-fig.show
-x = []
-i = 0
-l = 200
-
-ser.close()
-ser.open()
-
-for i in range(l):
-    ser1 = ser.readline().decode('utf-8').rstrip()
-    print(ser1)
-    ser2 = int(ser1)
-    x.append(ser2)
-    ax.plot(x,color = 'b')
-    fig.canvas.draw()
-    ax.set_xlim(left=max(0, i-30), rigth = i+60)
-    plt.pause(0.0001)
-plt.show()
-'''
-'''
-read_line = ser.readline()
-decoded_line = read_line.decode('utf-8').rstrip()
-if decoded_line ==  "":
-    print('No hay datos de entrada: ' + str(counter))
-    counter = counter +1
-    if counter == 10:
-        print('Se cerró la comunicación serial')
-'''
-    
     
