@@ -15,9 +15,9 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 #Lugar de destino para guardar los datos recibidos
-path_save = r'C:\Users\Daniel\Desktop\dato_leido.csv' 
+path_save = r'C:\Users\eaqui\OneDrive\Desktop\dato_leido.csv' 
 ser = serial.Serial(
-        port= ('COM7'),
+        port= ('COM9'),
         baudrate = 115200,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -26,6 +26,7 @@ ser = serial.Serial(
 )
 
 datos = []
+val = 5
 '''
 while 1:
     read_line = ser.readline()
@@ -44,6 +45,9 @@ def to_seconds(hora):
     return int(m)*60 + int(s) + int(ms)/1000
 
 
+
+
+
 while 1:
     try:
         if ser.inWaiting() != 0:
@@ -52,17 +56,45 @@ while 1:
             datos.append(decoded_line) #agrego datos a lo ultimo de la lista
             print (decoded_line)
             if ser.inWaiting() == 0:
+                #global df
                 df = pd.DataFrame(datos) 
                 df = df[0].str.split(',', expand = True) #separa por comas
                 df[0] = df[0].str.replace("'","") # Remove quotes 
                 df[0] = df[0].str.replace(":"," ") # add space 
                 df[0] = df[0].str.replace("."," ") # add space 
                 df[0] = df[0].map(to_seconds)
+                df[df.eq(val).any(1)].empty == df.iloc[0:0]
                 print("Quiero ver cuantas veces te actualizas carnal")
+        if df[df.eq(val).any(1)].empty == False: #Si esta lleno, ejecutar funcion
+                df = df.iloc[0:0] #vacio el dataframe
+                datos.clear()
+                #bandera = bandera.iloc[0:0]
+                print ('Si se encontro')
+                #bandera = df[df.eq(val).any(1)] #Encuentra el valor deseado
+
+        
+        # if df[df.eq(val).any(1)].empty == False: #Si esta lleno, ejecutar funcion
+        #     #df = df.iloc[0:0] #vacio el dataframe
+        #     #bandera = bandera.iloc[0:0]
+        #     df = pd.DataFrame()
+        #     print ('Si se encontro')
+        #     #bandera = df[df.eq(val).any(1)] #Encuentra el valor deseado
+            
+            
+                
+            
     except KeyboardInterrupt:
         ser.close()
-        
+    except NameError:
+        continue
     
+       
+
+# def limpio():
+#     df = df.iloc[0:0] #vacio el dataframe
+#     bandera = bandera.iloc[0:0]
+#     print ('Si se encontro')
+#     return df , bandera   
             
     
     
