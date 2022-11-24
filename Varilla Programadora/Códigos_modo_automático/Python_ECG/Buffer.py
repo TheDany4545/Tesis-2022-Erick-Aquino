@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 #Lugar de destino para guardar los datos recibidos
-path_save = r'C:\Users\eaqui\OneDrive\Desktop\dato_leido.csv' 
+#path_save = r'C:\Users\eaqui\OneDrive\Desktop\dato_leido.csv' 
 ser = serial.Serial(
         port= ('COM9'),
         baudrate = 115200,
@@ -26,6 +26,7 @@ ser = serial.Serial(
 )
 
 datos = []
+data_list = []
 val = 5
 '''
 while 1:
@@ -63,11 +64,13 @@ while 1:
                 df[0] = df[0].str.replace(":"," ") # add space 
                 df[0] = df[0].str.replace("."," ") # add space 
                 df[0] = df[0].map(to_seconds)
-                df[df.eq(val).any(1)].empty == df.iloc[0:0]
-                print("Quiero ver cuantas veces te actualizas carnal")
+                #df[df.eq(val).any(1)].empty == df.iloc[0:0]
+                print("Quiero ver cuantas veces te actualizas")
         if df[df.eq(val).any(1)].empty == False: #Si esta lleno, ejecutar funcion
+                data_list.append(df)
                 df = df.iloc[0:0] #vacio el dataframe
                 datos.clear()
+                val = val+5
                 #bandera = bandera.iloc[0:0]
                 print ('Si se encontro')
                 #bandera = df[df.eq(val).any(1)] #Encuentra el valor deseado
