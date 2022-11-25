@@ -92,12 +92,28 @@ while 1:
             heart_data_filtered = scipy.signal.filtfilt(b,a,data_list[n_list].ecg)
 
             ################################# Graficas ##################################
+            plt.figure(1)
             plt.plot(data_list[n_list].time, data_list[n_list].ecg)
             plt.plot(data_list[n_list].time, heart_data_filtered)
             plt.xlabel('Segundos (S)')
             plt.ylabel('Milivoltios (mV)')
+            
             plt.show()
             plt.pause(0.2)           
+            ############################# Posicion picos ################################
+            voltaje = 0.4
+            picos,_ = scipy.signal.find_peaks(heart_data_filtered,height=(voltaje))
+            plt.figure(2)
+            plt.plot(data_list[n_list].time, heart_data_filtered)
+            plt.plot(data_list[n_list].time[picos], heart_data_filtered[picos],"X")
+            plt.axhline(voltaje, color = 'black', label = 'threshold')
+            plt.xlabel('Segundos (S)')
+            plt.ylabel('Milivoltios (mV)')
+            
+            plt.show()
+            plt.pause(0.2)
+            
+             
             ############### Actualizar contadores ###########################
             n_list = n_list + 1
             ###############################################
