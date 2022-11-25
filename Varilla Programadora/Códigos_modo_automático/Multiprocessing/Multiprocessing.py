@@ -18,7 +18,7 @@ import numpy as np
 import time
 
 import scipy.signal
-import funcion_BPK as fn
+import funcion_BPK_mt as fn
 import pyhrv
 import pyhrv.nonlinear as nl
 import pyhrv.tools as tools
@@ -112,7 +112,49 @@ while 1:
             
             plt.show()
             plt.pause(0.2)
+            ############################ better peak finder #############################
+
+            # Function that looks the peaks on the derivative
+            d_ecg, peaks_d_ecg = fn.decg_peaks(heart_data_filtered, data_list[n_list].time)
+            plt.figure(3)
+            plt.show()
+            plt.pause(0.2)
             
+            #Function with other parameters as height and x distance 0.65
+            #Corrige los picos 0.59
+            Rwave_peaks_d_ecg = fn.d_ecg_peaks(d_ecg,peaks_d_ecg,data_list[n_list].time,0.6,0.4)
+            plt.figure(4)
+            plt.show()
+            plt.pause(0.2)
+            
+            #Grafica donde vemos la derivada y la original, pero comparando los picos de 
+            #ambas graficas y poniendo el pico de la derivada en la original, esto para
+            #descaratar falsos picos en la lectura del ECG
+            Rwave_t = fn.Rwave_peaks(heart_data_filtered, d_ecg, Rwave_peaks_d_ecg,data_list[n_list].time)
+           # plt.figure(5)
+            plt.show()
+            plt.pause(0.2)
+            
+            ################################ RR interval ###############################
+            #comparamos un data point de un pico con el otro datapoint del siguiente pico
+
+            RR_intervalo = 1/2*np.diff(Rwave_t) #Despues de la derivada
+            nni_results = nl.poincare(RR_intervalo, ellipse= True, vectors= True, legend= True)
+            
+
+            # SD1 (T) REFLEJA LA VARIACIÓN DE LATIDO A LATIDO / Variabilidad latido a latido
+            SD1 = nni_results['sd1']
+            # SD2 (L) RELFLEJA LAS FLUCTUACIONES GENERALES / Variabilidad en el tiempo
+            SD2 = nni_results['sd2']
+            centro = nni_results['centro']
+            #plt.figure(6)
+            #plt.show()
+            plt.pause(0.2)
+
+
+            print('SD1 es:',SD1)
+            print('SD2 es:',SD2)
+            print('Centro es: ',centro)
              
             ############### Actualizar contadores ###########################
             n_list = n_list + 1
