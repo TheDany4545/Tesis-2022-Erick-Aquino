@@ -25,6 +25,13 @@ import pyhrv.tools as tools
 import biosppy
 import nolds
 import spectrum
+
+import sklearn as sk
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import random
+from joblib import dump, load
 ################### GUARDAR LO QUE VIENE DEL SERIAL EN UN BUFFER###############
 ser = serial.Serial(
         port= ('COM9'),
@@ -155,6 +162,26 @@ while 1:
             print('SD1 es:',SD1)
             print('SD2 es:',SD2)
             print('Centro es: ',centro)
+            
+            ################################ MODELO ENTRENADO #############################
+            model = load('Modelo_entrenado.joblib')
+            input_data = (SD1,SD2,centro) #ejercicio NEW16
+            #input_data = (8.142530319255803,10.335337440064551,355.4230769230769) #Resposo P10_1
+            #input_data = (9.630635074824735,16.05824359947251,365.92) #Resposo P10_2
+            #input_data = (10.002720718319964,19.43872283814529,421.72727272727275) #R#esposo P10_5
+
+            #cambiando un poco to numpy array
+            input_data_as_numpy_array = np.asarray(input_data)
+
+            #reshape the numpy array as we are predicting for only one instance
+            input_data_reshape = input_data_as_numpy_array.reshape(1,-1)
+
+            prediction = model.predict(input_data_reshape)
+            print(prediction)
+            if (prediction[0]==0):
+              print('La persona esta en reposo según su ECG')
+            else:
+              print('La persona esta haciedo un esfuerzo físico según su ECG')
              
             ############### Actualizar contadores ###########################
             n_list = n_list + 1

@@ -67,3 +67,5 @@ else:
 #saving
 #filename = 'model.sav'
 #joblib.dump(clf,filename)
+from joblib import dump, load
+dump(model, 'Modelo_entrenado.joblib') 
