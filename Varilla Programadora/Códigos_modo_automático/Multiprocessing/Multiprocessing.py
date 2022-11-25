@@ -90,6 +90,14 @@ while 1:
             Wn = 0.2 #Cut out frequencies higher 50 hZ
             b, a = scipy.signal.butter(4,Wn, 'low', analog = False) #filtro orden 4
             heart_data_filtered = scipy.signal.filtfilt(b,a,data_list[n_list].ecg)
+
+            ################################# Graficas ##################################
+            plt.plot(data_list[n_list].time, data_list[n_list].ecg)
+            plt.plot(data_list[n_list].time, heart_data_filtered)
+            plt.xlabel('Segundos (S)')
+            plt.ylabel('Milivoltios (mV)')
+            plt.show()
+            plt.pause(0.2)           
             ############### Actualizar contadores ###########################
             n_list = n_list + 1
             ###############################################
