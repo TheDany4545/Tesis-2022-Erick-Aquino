@@ -86,10 +86,11 @@ while 1:
             val = val+5
             
             print ('****************** Si se encontro ************************')
-            ##############################################################
+            #######################Filto Butterworth #########################
             Wn = 0.2 #Cut out frequencies higher 50 hZ
             b, a = scipy.signal.butter(4,Wn, 'low', analog = False) #filtro orden 4
             heart_data_filtered = scipy.signal.filtfilt(b,a,data_list[n_list].ecg)
+            ############### Actualizar contadores ###########################
             n_list = n_list + 1
             ###############################################
             #grafica()
