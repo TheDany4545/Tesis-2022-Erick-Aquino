@@ -17,8 +17,8 @@ Capeta donde se encuentra la libreria PyHRV modificada para la obtención de res
 En la varilla programadora se tiene el envio de parámetros el cual es modificable a través de una interfaz gráfica la cual se ejecuta desde python y esto lo hace a través del microcontrolador ESP8266 al cual se le carga un programa en C que permite la comunicación entre la interfaz gráfica y el estimualdor por medio del envio de parámetros a través del NRFL24L01.
 
 <p align="center">
-  <img src="[ECGV3](https://user-images.githubusercontent.com/45274181/204593175-f546ccf3-46e2-4b64-a7ae-84bbfec2144d.gif)
-" alt="animated" />
+![ECGV3](https://user-images.githubusercontent.com/45274181/204594546-e67789b7-99ad-4b47-ba8b-1eb101cf408b.gif)
+
 </p>
 
 
