@@ -21,5 +21,9 @@ En la varilla programadora se tiene el envio de parámetros el cual es modificab
 
 </p>
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/45274181/204594546-e67789b7-99ad-4b47-ba8b-1eb101cf408b.gif" />
+</p>
+
 
 
