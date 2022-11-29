@@ -19,6 +19,6 @@ En la varilla programadora se tiene el envio de parámetros el cual es modificab
 <p align="center">
   <img width="460" height="300" src="(https://user-images.githubusercontent.com/45274181/204590718-d6129132-e38c-4658-b08d-cd157732e370.gif)">
 </p>
-![ECGV3](https://user-images.githubusercontent.com/45274181/204590718-d6129132-e38c-4658-b08d-cd157732e370.gif)
+
 
 
