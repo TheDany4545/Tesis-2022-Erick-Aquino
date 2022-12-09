@@ -7,14 +7,14 @@ Created on Thu Oct 27 20:13:06 2022
 
 ############################## SE IMPORTAN LIBRERIAS ##########################
 import pandas as pd
-import csv
 import serial
 import random
-from itertools import count
 import matplotlib.pyplot as plt
+import numpy as np
+import csv
+from itertools import count
 from matplotlib.animation import FuncAnimation
 import multiprocessing
-import numpy as np
 import time
 
 import scipy.signal
@@ -44,8 +44,10 @@ ser = serial.Serial(
 
 datos = []
 data_list = [] #Aqui se guardan los df en distintos segundos
+save_predictions = []
 n_list = 0 #Que version de la lista estoy leyendo
 val = 5
+val_stop = 19
 
         
 ######################### Funcion formato de tiempo a Segundos###############
@@ -106,7 +108,7 @@ while 1:
             plt.ylabel('Milivoltios (mV)')
             
             plt.show()
-            plt.pause(0.2)           
+            plt.pause(0.02)           
             ############################# Posicion picos ################################
             voltaje = 0.4
             picos,_ = scipy.signal.find_peaks(heart_data_filtered,height=(voltaje))
@@ -118,21 +120,21 @@ while 1:
             plt.ylabel('Milivoltios (mV)')
             
             plt.show()
-            plt.pause(0.2)
+            plt.pause(0.02)
             ############################ better peak finder #############################
 
             # Function that looks the peaks on the derivative
             d_ecg, peaks_d_ecg = fn.decg_peaks(heart_data_filtered, data_list[n_list].time)
             plt.figure(3)
             plt.show()
-            plt.pause(0.2)
+            plt.pause(0.02)
             
             #Function with other parameters as height and x distance 0.65
             #Corrige los picos 0.59
             Rwave_peaks_d_ecg = fn.d_ecg_peaks(d_ecg,peaks_d_ecg,data_list[n_list].time,0.6,0.4)
             plt.figure(4)
             plt.show()
-            plt.pause(0.2)
+            plt.pause(0.02)
             
             #Grafica donde vemos la derivada y la original, pero comparando los picos de 
             #ambas graficas y poniendo el pico de la derivada en la original, esto para
@@ -140,7 +142,7 @@ while 1:
             Rwave_t = fn.Rwave_peaks(heart_data_filtered, d_ecg, Rwave_peaks_d_ecg,data_list[n_list].time)
            # plt.figure(5)
             plt.show()
-            plt.pause(0.2)
+            plt.pause(0.02)
             
             ################################ RR interval ###############################
             #comparamos un data point de un pico con el otro datapoint del siguiente pico
@@ -156,7 +158,7 @@ while 1:
             centro = nni_results['centro']
             #plt.figure(6)
             #plt.show()
-            plt.pause(0.2)
+            plt.pause(0.02)
 
 
             print('SD1 es:',SD1)
@@ -164,7 +166,7 @@ while 1:
             print('Centro es: ',centro)
             
             ################################ MODELO ENTRENADO #############################
-            model = load('Modelo_entrenado.joblib')
+            model = load(r'Z:\Universidad UVG\Sexto Año\Segundo Ciclo\Tesis\Tesis-2022-Erick-Aquino\Varilla Programadora\Códigos_modo_automático\Python_ECG\Modelo_entrenado.joblib')
             input_data = (SD1,SD2,centro) #ejercicio NEW16
             #input_data = (8.142530319255803,10.335337440064551,355.4230769230769) #Resposo P10_1
             #input_data = (9.630635074824735,16.05824359947251,365.92) #Resposo P10_2
@@ -177,6 +179,7 @@ while 1:
             input_data_reshape = input_data_as_numpy_array.reshape(1,-1)
 
             prediction = model.predict(input_data_reshape)
+            save_predictions.append(prediction[0])
             print(prediction)
             if (prediction[0]==0):
               print('La persona esta en reposo según su ECG')
@@ -191,13 +194,15 @@ while 1:
             #p1.start()
             #p1.join()
             #p1 = multiprocessing.Process(target=grafica)
-                
-
+        if df[df.eq(val_stop).any(1)].empty == False: #Si esta lleno, ejecutar funcion
+            ser.close()
+            break
+        
     except KeyboardInterrupt:
         ser.close()
     except NameError:
         continue
-    
+print (save_predictions)
 
 
     
