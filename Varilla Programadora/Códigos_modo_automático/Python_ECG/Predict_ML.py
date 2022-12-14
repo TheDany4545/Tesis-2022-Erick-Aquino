@@ -26,6 +26,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y,
                                                     test_size = 0.2,
                                                     stratify=y,
                                                     random_state= 207)
+#207
 print(x.shape, x_train.shape, x_test.shape)
 
 model = LogisticRegression()
@@ -48,10 +49,10 @@ cm_display = ConfusionMatrixDisplay(cm).plot()
 #input_data = (180.46866958812709,174.00529805152485,380.57142857142856) #ejercicio MIT 323 60 segs
 #input_data = (8.05734513711931,12.616408608832602,295.6621621621622) #ejercicio MIT 325 60 segs
 #input_data = (2.0264513569392224,1.4312474935367059,166.140350877193) #ejercicio NEW14
-input_data = (1.2322818340454906,1.3922182317935168,171.92727272727274) #ejercicio NEW15
+#input_data = (1.2322818340454906,1.3922182317935168,171.92727272727274) #ejercicio NEW15
 #input_data = (4.774133991825201,4.935848792840509,204.37777777777777) #ejercicio NEW16
 #input_data = (8.142530319255803,10.335337440064551,355.4230769230769) #Resposo P10_1
-#input_data = (9.630635074824735,16.05824359947251,365.92) #Resposo P10_2
+input_data = (9.630635074824735,16.05824359947251,365.92) #Resposo P10_2
 #input_data = (10.002720718319964,19.43872283814529,421.72727272727275) #R#esposo P10_5
 
 #cambiando un poco to numpy array

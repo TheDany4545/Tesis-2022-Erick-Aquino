@@ -202,8 +202,17 @@ while 1:
         ser.close()
     except NameError:
         continue
-print (save_predictions)
+print ('El resumen de predicciones de cada 20 segs es:',save_predictions)
 
+guardar_datos = input('¿Quieres guardar los datos para un análisis posterior? Y/N ')
+
+if guardar_datos == "Y":
+    print("Se han guardado los valores")
+elif guardar_datos == "N":
+    print("No se han guardado los valores")
+else:
+    print("No es un caracter válido")
+    
 
     
 
