@@ -9,45 +9,46 @@ int CS = 10;
 void setup() {
   pinMode (CS, OUTPUT);
   SPI.begin();
-
+/*
   pinMode(9, OUTPUT);                               // Set digital pin 9 (D9) to an output
   TCCR1A = _BV(COM1A1) | _BV(WGM11);                // Enable the PWM output OC1A on digital pins 9
   TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS12);     // Set fast PWM and prescaler of 256 on timer 1
-  ICR1 = 62499;                                     // Set the PWM frequency to 1Hz: 16MHz/(256 * 1Hz) - 1 = 62499
-  OCR1A = 34374;                                     // valor *%
+  ICR1 = 2082;                                     // Set the PWM frequency to 1Hz: 16MHz/(256 * 1Hz) - 1 = 62499
+  OCR1A = 2082*0.55;                                     // valor *%
+  */
 }
 
 void loop() {
-
+/*
     digitalPotWrite(38);
     delay(100);
 
     digitalPotWrite(0);
-    delay(100); 
-/*
+    delay(100); */
+
   analogWrite(9, HIGH);
   pinMode(9, OUTPUT);                               // Set digital pin 9 (D9) to an output
   TCCR1A = _BV(COM1A1) | _BV(WGM11);                // Enable the PWM output OC1A on digital pins 9
   TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS12);     // Set fast PWM and prescaler of 256 on timer 1
-  ICR1 = 62499;                                     // Set the PWM frequency to 1Hz: 16MHz/(256 * 1Hz) - 1 = 62499
-  OCR1A = 34374;
+  ICR1 = 2499;                                     // Set the PWM frequency to 1Hz: 16MHz/(256 * 1Hz) - 1 = 62499
+  OCR1A = 2499*0.55;
   // Rampa de Subida
-  for (int i = 0; i <= 168; i++) {
+  for (int i = 0; i <= 468; i++) {
     digitalPotWrite(i);
-    delay(10);
+    delay(12);
   }
   delay (4000); //segundos de funcionamiento
   //Rampa de Bajada
-  for (int i = 168; i >= 0; i--) {
+  for (int i = 468; i >= 0; i--) {
     digitalPotWrite(i);
-    delay(10);
+    delay(12);
     
   }
 
   digitalWrite(9, LOW);
   digitalPotWrite(0);
-  delay(6000);
-  */
+  delay(4000);
+  
 }
 
 int digitalPotWrite(int value) {
