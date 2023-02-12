@@ -10,7 +10,7 @@ Es basado en el modo de funcionamiento de *detección y respuesta* también cono
 </p>
 
 ### Documentación
-Se enceuntran artículos cientificos, datasheets de distintos componentes y microcontroladores, pinouts y base de datos en formato .csv para hacer las pruebas.
+Se encuentran artículos cientificos, datasheets de distintos componentes y microcontroladores, pinouts y base de datos en formato .csv para hacer las pruebas.
 
 ### Estimulador
 Carpeta donde se encuentra los códigos de los microcontroladores ESP8266 y Trinket M0 para la estimulación VNS y la recepción de parámetros. También se encuntran los diseños de PCB's de distintos años.
