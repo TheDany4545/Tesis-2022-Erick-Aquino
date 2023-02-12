@@ -16,7 +16,7 @@ Se encuentran artículos cientificos, datasheets de distintos componentes y micr
 Carpeta donde se encuentra los códigos de los microcontroladores ESP8266 y Trinket M0 para la estimulación VNS y la recepción de parámetros. También se encuntran los diseños de PCB's de distintos años.
 
 ### Recursos
-Capeta donde se encuentra la libreria PyHRV modificada para la obtención de resultados en el análisis de los ECG´s. También se encuentra una herramienta de Matlab obtenida desde Physionet para la simulación de un ECG donde uno pude modificar parámetros de simulación. Se agregó un archivo .txt con un link para descargar todas las librerias y se describe la instalación en anaconda.
+Carpeta donde se encuentra la librería PyHRV modificada para la obtención de resultados en el análisis de los ECG´s. También se encuentra una herramienta de Matlab obtenida desde Physionet para la simulación de un ECG donde uno pude modificar parámetros de simulación. Se agregó un archivo .txt con un link para descargar todas las librerias y se describe la instalación en anaconda.
 
 ### Varilla Programadora
 En la varilla programadora se tiene el envio de parámetros el cual es modificable a través de una interfaz gráfica la cual se ejecuta desde python y esto lo hace a través del microcontrolador ESP8266 al cual se le carga un programa en C que permite la comunicación entre la interfaz gráfica y el estimualdor por medio del envio de parámetros a través del NRFL24L01.
