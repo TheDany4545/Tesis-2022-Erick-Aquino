@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Oct 27 20:13:06 2022
-
 @author: Daniel
 """
 
@@ -203,7 +202,7 @@ while 1:
     except NameError:
         continue
 print ('El resumen de predicciones de cada 20 segs es:',save_predictions)
-
+'''
 guardar_datos = input('¿Quieres guardar los datos para un análisis posterior? Y/N ')
 
 if guardar_datos == "Y":
@@ -212,12 +211,4 @@ elif guardar_datos == "N":
     print("No se han guardado los valores")
 else:
     print("No es un caracter válido")
-    
-
-    
-
-
-
-
-
-    
+    '''
